@@ -41,13 +41,8 @@ async function mongoConnect(){
 
 ////////Express Application/////////
 app.get('/', async (req, res) => {
-  connection = await mongoConnect();
-  db = connection.db("GHMS");
-  collection = db.collection('Users');
-  documents = await collection.find({}).toArray();
-  response_json = JSON.stringify(documents)
-  console.log(documents);
-  res.render('index.ejs', {users: documents});
+  
+  res.render('login.ejs');
 })
 
 
