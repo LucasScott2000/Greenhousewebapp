@@ -1,38 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
     <style>
         body {
-            padding-top: 50px;
+          
+            background-color: lightblue;
         }
 
         .center-div {
             text-align: center;
             margin-top: 50px;
         }
+
+       
     </style>
 </head>
-<body>
+<body>  
+    <nav class="green lighten-1">
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo center">Greenhouse Login</a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        
+      </ul>
+    </div>
+  </nav>
     <div class="container">
         <div class="row">
-            <div class="col-md-6 offset-md-3 center-div">
-                <h1>Login</h1>
-                <form action="/login" method="POST">
-                    <label>Username:</label>
-                    <input type="text" name="username" class="form-control" required><br>
-                    <label>Password:</label>
-                    <input type="password" name="password" class="form-control" required><br>
-                    {% if error %}
-                        <p style="color: red">{{error}}</p>
-                    {% endif %}
-                    <button type="submit" class="btn btn-primary">Log in</button>
-                </form>
+            <div class="col s3"></div>
+  
+            <div class="col s6 ">
+                <div class="card-panel green lighten-3 center-div ">
+                    <form action="/login" method="POST">
+                        <p class="black-text left">Username:</p>
+                        <input type="text" name="username" class="form-control" required><br>
+                        <p class="black-text left">Password:</p>
+                        <input type="password" name="password" class="form-control" required><br>
+                        <br>
+                        {% if error %}
+                            <p style="color: red; font-weight: bold">{{error}}</p>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Log in</button>
+                    </form>
+                </div>
             </div>
+            <div class="col s3"></div>
         </div>
     </div>
 </body>

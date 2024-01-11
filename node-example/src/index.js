@@ -72,20 +72,19 @@ app.post('/login', async function(req, res){
       // check if the user exists
       connection = await mongoConnect();
       db = connection.db("GHMS");
-      collection = db.collection('Users');
-      documents = await collection.find({}).toArray();
+      users = db.collection('Users');
+      documents = await users.find({}).toArray();
       response_json = JSON.stringify(documents);
-      
-      
-
-      const user = await collection.findOne({ username: req.body.username });
+    
+      const user = await users.findOne({ username: req.body.username });
     
       //console.log(user);
-      if (user) {
+      if (user  &&  req.body.password === user.password) {
         //check if password matches
-        if (req.body.password === user.password) {
-          return res.render("secret");
-        } 
+        
+        
+        return res.redirect('/menu?user=' + encodeURIComponent(user.username));
+        
       }
       res.render('login.ejs',{ error: "Username or password is incorrect" });
     
@@ -93,6 +92,24 @@ app.post('/login', async function(req, res){
       res.status(400).json({ error });
     }
 });
+
+
+app.get('/greenhouse', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  sensors = db.collection('Sensors');
+  documents = await sensors.find({}).toArray();
+  response_json = JSON.stringify(documents);
+  console.log(documents)
+  return res.render("greenhouse.ejs", {sensors:documents});
+        
+})
+
+app.get('/menu',(req, res) => {
+  let user = req.query.user;
+  return res.render("menu.ejs", {user});
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
