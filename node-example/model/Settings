@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const Settings = new Schema({
     uniqueId: {
-        type: String, // or use ObjectId if you want MongoDB to generate unique IDs
+        type: String, //use ObjectId if i want MongoDB to generate unique IDs
         required: true,
         unique: true
     },
@@ -44,11 +44,11 @@ const Settings = new Schema({
         required: true
     },
     cameraReading: {
-        type: String, // assuming you'll store the image path or URL
+        type: String, //  image path or URL
         required: true
     }
 });
 
-// You may add additional validations, such as min, max, enum, etc., based on your requirements
+// additional validations can be added, such as min, max, enum, etc., based on requirements
 
 module.exports = mongoose.model('Settings', Settings);
