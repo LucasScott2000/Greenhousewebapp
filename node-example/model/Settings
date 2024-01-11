@@ -1,0 +1,54 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const Settings = new Schema({
+    uniqueId: {
+        type: String, // or use ObjectId if you want MongoDB to generate unique IDs
+        required: true,
+        unique: true
+    },
+    airTemperature: {
+        type: Number,
+        required: true
+    },
+    soilTemperature: {
+        type: Number,
+        required: true
+    },
+    lightLevel: {
+        type: Number,
+        required: true
+    },
+    humidityLevel: {
+        type: Number,
+        required: true
+    },
+    co2Level: {
+        type: Number,
+        required: true
+    },
+    soilMoisture: {
+        type: Number,
+        required: true
+    },
+    soilConductivity: {
+        type: Number,
+        required: true
+    },
+    soilPhLevel: {
+        type: Number,
+        required: true
+    },
+    airFlowRate: {
+        type: Number,
+        required: true
+    },
+    cameraReading: {
+        type: String, // assuming you'll store the image path or URL
+        required: true
+    }
+});
+
+// You may add additional validations, such as min, max, enum, etc., based on your requirements
+
+module.exports = mongoose.model('Settings', Settings);
