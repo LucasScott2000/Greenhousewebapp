@@ -12,7 +12,6 @@ const express = require("express"),
         require("passport-local-mongoose")
 const app = express()
 const User = require("../model/User");
-
 app.use(express.json())
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
