@@ -1,0 +1,31 @@
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <style> body {
+        background-color: lightblue;
+      }</style>
+    <body>
+        <nav class="green lighten-1">
+            <div class="nav-wrapper">
+              <a href="#" class="brand-logo center">Realtime Greenhouse Data</a>
+              <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="/login">Logout</a></li>
+                <li><a href="/menu"> Home Menu</a></li>
+              </ul>
+            </div>
+          </nav>
+          <br>
+        <div class="container">
+           <div class="row">
+                {% for sensor in sensors %}
+                <div class="col s4" >
+                    <div class="card-panel green lighten-3">Sensor : {{ sensor.sensor_type | replace("_", " ") | title  }} <br> Value : {{ sensor.value }} <br> Timestamp : {{ sensor.timestamp }}</div>
+                </div>
+                {% endfor %}
+            </div> 
+        </div>
+    
+    </body>
+    

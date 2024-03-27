@@ -42,7 +42,7 @@ async function mongoConnect(){
 ////////Express Application/////////
 app.get('/', async (req, res) => {
   
-  res.render('login.ejs');
+  res.render('greenhouse.ejs');
 })
 
 
@@ -89,6 +89,62 @@ app.post('/login', async function(req, res){
 });
 
 
+app.get('/historical', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  sensors = db.collection('Sensors');
+  documents = await sensors.find({}).toArray();
+  response_json = JSON.stringify(documents);
+  console.log(documents)
+  return res.render("historical.ejs", {sensors:documents}); 
+        
+})
+
+app.get('/login', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  sensors = db.collection('Sensors');
+  documents = await sensors.find({}).toArray();
+  response_json = JSON.stringify(documents);
+  console.log(documents)
+  return res.render("login.ejs", {sensors:documents}); 
+        
+})
+
+app.get('/envselect', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  sensors = db.collection('Sensors');
+  documents = await sensors.find({}).toArray();
+  response_json = JSON.stringify(documents);
+  console.log(documents)
+  return res.render("envselect.ejs", {sensors:documents}); 
+        
+})
+
+app.get('/yourgreenhouse', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  sensors = db.collection('Sensors');
+  documents = await sensors.find({}).toArray();
+  response_json = JSON.stringify(documents);
+  console.log(documents)
+  return res.render("yourgreenhouse.ejs", {sensors:documents}); 
+        
+})
+
+app.get('/changegreenhouse', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  sensors = db.collection('Sensors');
+  documents = await sensors.find({}).toArray();
+  response_json = JSON.stringify(documents);
+  console.log(documents)
+  return res.render("changegreenhouse.ejs", {sensors:documents}); 
+        
+})
+
+
 app.get('/greenhouse', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -96,7 +152,7 @@ app.get('/greenhouse', async (req, res) => {
   documents = await sensors.find({}).toArray();
   response_json = JSON.stringify(documents);
   console.log(documents)
-  return res.render("greenhouse.ejs", {sensors:documents});
+  return res.render("greenhouse.ejs", {sensors:documents}); // *change to login.ejs as this is the first page!*
         
 })
 
