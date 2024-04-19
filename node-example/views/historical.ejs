@@ -19,7 +19,7 @@
           <br>
         <div class="container">
            <div class="row">
-                {% for sensor in sensors %}
+                {% for sensor in histsensors %}
                 <div class="col s4" >
                     <div class="card-panel green lighten-3">Sensor : {{ sensor.sensor_type | replace("_", " ") | title  }} <br> Value : {{ sensor.value }} <br> Timestamp : {{ sensor.timestamp }}</div>
                 </div>

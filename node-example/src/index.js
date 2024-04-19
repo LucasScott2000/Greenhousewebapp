@@ -92,11 +92,11 @@ app.post('/login', async function(req, res){
 app.get('/historical', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
-  sensors = db.collection('Sensors');
-  documents = await sensors.find({}).toArray();
+  histsensors = db.collection('History');
+  documents = await histsensors.find({}).toArray();
   response_json = JSON.stringify(documents);
   console.log(documents)
-  return res.render("historical.ejs", {sensors:documents}); 
+  return res.render("historical.ejs", {histsensors:documents});  
         
 })
 
