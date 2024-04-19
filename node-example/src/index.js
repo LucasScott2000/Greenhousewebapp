@@ -24,7 +24,7 @@ nunjucks.configure(['views/'], {
 /////////Setting up Mongo//////////
 async function mongoConnect(){
   const { MongoClient, ServerApiVersion } = require('mongodb');
-  const uri = "mongodb+srv://lscott:mongodb123@clusterghms.mqurwz8.mongodb.net/?retryWrites=true&w=majority";
+  const uri = "mongodb+srv://lscott:Mine513jw62@clusterghms.mqurwz8.mongodb.net/?retryWrites=true&w=majority";
 
   const client = new MongoClient(uri, {
     serverApi: {

@@ -1,0 +1,97 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from sense_hat import SenseHat
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+import time
+
+
+uri = "mongodb+srv://lscott:Mine513jw62@clusterghms.mqurwz8.mongodb.net/?retryWrites=true&w=majority"
+sense = SenseHat()
+
+on = (0, 255, 0)  
+off = (0, 0, 0)  
+
+tempX = 0
+tempY = 0
+pressX = 0
+pressY = 2
+humX = 0
+humY = 4
+
+tempValue = 0
+pressValue = 0
+humValue = 0
+
+# Connect to MongoDB
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+    
+    
+    
+    
+db = client["sensor_data_db"]
+collection = db["sensor_data"]
+
+# Default set points if no data in the database
+default_set_points = {
+    "tempSetPoint": 60,
+    "pressSetPoint": 885,
+    "humSetPoint": 50
+}
+
+while True:
+    # Read set points from MongoDB
+    set_points_doc = collection.find_one(sort=[('_id', pymongo.DESCENDING)])
+    if set_points_doc:
+        tempSetPoint = set_points_doc.get("tempSetPoint", default_set_points["tempSetPoint"])
+        pressSetPoint = set_points_doc.get("pressSetPoint", default_set_points["pressSetPoint"])
+        humSetPoint = set_points_doc.get("humSetPoint", default_set_points["humSetPoint"])
+    else:
+        tempSetPoint = default_set_points["tempSetPoint"]
+        pressSetPoint = default_set_points["pressSetPoint"]
+        humSetPoint = default_set_points["humSetPoint"]
+
+    # Read sensor values
+    tempValue = sense.temperature
+    pressValue = sense.pressure
+    humValue = sense.humidity
+
+    # Turn on LEDs based on sensor readings compared to set points
+    if tempValue > tempSetPoint:
+        sense.set_pixel(tempX, tempY, on)
+    else:
+        sense.set_pixel(tempX, tempY, off)
+
+    if pressValue > pressSetPoint:
+        sense.set_pixel(pressX, pressY, on)
+    else:
+        sense.set_pixel(pressX, pressY, off)
+
+    if humValue > humSetPoint:
+        sense.set_pixel(humX, humY, on)
+    else:
+        sense.set_pixel(humX, humY, off)
+
+    # Store sensor readings in MongoDB
+    sensor_data = {
+        "tempSetPoint": tempSetPoint,
+        "pressSetPoint": pressSetPoint,
+        "humSetPoint": humSetPoint,
+        "tempReading": tempValue,
+        "pressReading": pressValue,
+        "humReading": humValue
+    }
+    collection.insert_one(sensor_data)
+
+    # Delay for a while before next iteration
+    time.sleep(1)
+
+# Close the database connection when done
+client.close()
