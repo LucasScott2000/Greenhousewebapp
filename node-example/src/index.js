@@ -1,28 +1,27 @@
+// Import necessary modules
+const nunjucks = require('nunjucks');
+const express = require("express");
+const mongoose = require("mongoose");
+const passport = require("passport");
+const bodyParser = require("body-parser");
+const LocalStrategy = require("passport-local");
+const passportLocalMongoose = require("passport-local-mongoose");
+const path = require('path');
 
-
-let nunjucks = require('nunjucks')
-const port = 3000
-const path = require('path')
-const express = require("express"),
-    mongoose = require("mongoose"),
-    passport = require("passport"),
-    bodyParser = require("body-parser"),
-    LocalStrategy = require("passport-local"),
-    passportLocalMongoose = 
-        require("passport-local-mongoose")
-const app = express()
-const User = require("../model/User");
-app.use(express.json())
+// Set up Express application
+const app = express();
+app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Configure Nunjucks
 nunjucks.configure(['views/'], {
   autoescape: true,
   express: app
-})
+});
 
-/////////Setting up Mongo//////////
-async function mongoConnect(){
+// Setting up MongoDB connection
+async function mongoConnect() {
   const { MongoClient, ServerApiVersion } = require('mongodb');
   const uri = "mongodb+srv://lscott:Mine513jw62@clusterghms.mqurwz8.mongodb.net/?retryWrites=true&w=majority";
 
@@ -34,61 +33,46 @@ async function mongoConnect(){
     }
   });
 
-  return await client.connect()
+  return await client.connect();
 }
-////////////////////////////////
 
-
-////////Express Application/////////
+// Express routes
 app.get('/', async (req, res) => {
-  
   res.render('greenhouse.ejs');
-})
-
-
-
-
-
-
-
-//sendFile function to send a static HTML page 
-app.get('/home', async (req, res) => {
-  res.sendFile(path.join(__dirname, '/index.html'));
-
-
-})
-
-app.get('/login', async (req, res) => {
-  res.render('login.ejs');
-})
-
-app.post('/login', async function(req, res){
-  try {
-      // check if the user exists
-      connection = await mongoConnect();
-      db = connection.db("GHMS");
-      users = db.collection('Users');
-      documents = await users.find({}).toArray();
-      response_json = JSON.stringify(documents);
-    
-      const user = await users.findOne({ username: req.body.username });
-    
-      //console.log(user);
-      if (user  &&  req.body.password === user.password) {
-        //check if password matches
-        
-        
-        return res.redirect('/menu?user=' + encodeURIComponent(user.username));
-        
-      }
-      res.render('login.ejs',{ error: "Username or password is incorrect" });
-    
-    } catch (error) {
-      res.status(400).json({ error });
-    }
 });
 
+// Route to send a static HTML page
+app.get('/home', async (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
 
+// Login route
+app.get('/login', async (req, res) => {
+  res.render('login.ejs');
+});
+
+// Login form submission
+app.post('/login', async function(req, res){
+  try {
+    connection = await mongoConnect();
+    db = connection.db("GHMS");
+    users = db.collection('Users');
+    documents = await users.find({}).toArray();
+    response_json = JSON.stringify(documents);
+  
+    const user = await users.findOne({ username: req.body.username });
+  
+    if (user && req.body.password === user.password) {
+      return res.redirect('/menu?user=' + encodeURIComponent(user.username));
+    }
+    res.render('login.ejs',{ error: "Username or password is incorrect" });
+  
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+});
+
+// Route for historical data
 app.get('/historical', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -97,9 +81,9 @@ app.get('/historical', async (req, res) => {
   response_json = JSON.stringify(documents);
   console.log(documents)
   return res.render("historical.ejs", {histsensors:documents});  
-        
-})
+});
 
+// Render login page with sensor data
 app.get('/login', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -108,9 +92,9 @@ app.get('/login', async (req, res) => {
   response_json = JSON.stringify(documents);
   console.log(documents)
   return res.render("login.ejs", {sensors:documents}); 
-        
-})
+});
 
+// Route for environmental selection
 app.get('/envselect', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -119,9 +103,9 @@ app.get('/envselect', async (req, res) => {
   response_json = JSON.stringify(documents);
   console.log(documents)
   return res.render("envselect.ejs", {sensors:documents}); 
-        
-})
+});
 
+// Route for user's greenhouse
 app.get('/yourgreenhouse', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -130,9 +114,9 @@ app.get('/yourgreenhouse', async (req, res) => {
   response_json = JSON.stringify(documents);
   console.log(documents)
   return res.render("yourgreenhouse.ejs", {sensors:documents}); 
-        
-})
+});
 
+// Route for changing greenhouse
 app.get('/changegreenhouse', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -141,10 +125,9 @@ app.get('/changegreenhouse', async (req, res) => {
   response_json = JSON.stringify(documents);
   console.log(documents)
   return res.render("changegreenhouse.ejs", {sensors:documents}); 
-        
-})
+});
 
-
+// Route for greenhouse data
 app.get('/greenhouse', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
@@ -152,25 +135,26 @@ app.get('/greenhouse', async (req, res) => {
   documents = await sensors.find({}).toArray();
   response_json = JSON.stringify(documents);
   return res.render("greenhouse.ejs", {sensors:documents}); // *change to login.ejs as this is the first page!*
-        
-})
+});
+
+// Route to get sensor data
 app.get('/getsensordata', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");
   sensors = db.collection('Sensors');
   documents = await sensors.find({}).toArray();
   res.setHeader('Content-Type', 'application/json');
-  return res.json(documents)
-        
-})
+  return res.json(documents);
+});
 
+// Route for menu
 app.get('/menu',(req, res) => {
   let user = req.query.user;
   return res.render("menu.ejs", {user});
-})
+});
 
-
+// Start server
+const port = 3000;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-////////////////////////////////////
+  console.log(`Example app listening on port ${port}`);
+});

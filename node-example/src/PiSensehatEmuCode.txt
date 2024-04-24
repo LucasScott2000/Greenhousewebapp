@@ -1,0 +1,92 @@
+from sense_emu import SenseHat
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+from bson import ObjectId  # Import ObjectId from bson
+import time
+from datetime import datetime
+
+# MongoDB Connection
+uri = "mongodb+srv://lscott:Mine513jw62@clusterghms.mqurwz8.mongodb.net/?retryWrites=true&w=majority"
+
+# Connect to MongoDB with specified server API version
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+# SenseHat initialization
+sense = SenseHat()
+
+# Get MongoDB collections
+plant_profiles_collection = client.GHMS.PlantProfiles
+sensors_collection = client.GHMS.Sensors
+history_collection = client.GHMS.History  # Add History collection
+history_last_update = time.time()  # Initialize last update time for history
+# Main loop to read and store sensor data
+while True:
+    # Read sensor data
+    air_temp = sense.temperature
+    air_press = sense.pressure
+    humidity = sense.humidity
+
+    # Print sensor values
+    print(f"Air Temperature: {air_temp}")
+    print(f"Air Pressure: {air_press}")
+    print(f"Humidity: {humidity}")
+
+    # Update sensor readings in Sensors collection
+    sensors_collection.update_one({"sensor_type": "airTemp"},
+                                  {"$set": {"value": air_temp, "timestamp": datetime.now()}},
+                                  upsert=True)
+
+    sensors_collection.update_one({"sensor_type": "airPress"},
+                                  {"$set": {"value": air_press, "timestamp": datetime.now()}},
+                                  upsert=True)
+
+    sensors_collection.update_one({"sensor_type": "humidity"},
+                                  {"$set": {"value": humidity, "timestamp": datetime.now()}},
+                                  upsert=True)
+
+    # Store sensor readings in History collection every 30 seconds
+    current_time = time.time()
+    if current_time - history_last_update >= 30:
+        history_data = [
+            {
+                "sensor_type": "airTemp",
+                "value": air_temp,
+                "timestamp": datetime.now()
+            },
+            {
+                "sensor_type": "airPress",
+                "value": air_press,
+                "timestamp": datetime.now()
+            },
+            {
+                "sensor_type": "humidity",
+                "value": humidity,
+                "timestamp": datetime.now()
+            }
+        ]
+        history_collection.insert_many(history_data)
+        history_last_update = current_time  # Update last update time for history
+
+    # Check plant profiles and perform actions accordingly
+    plant_profiles = plant_profiles_collection.find()
+    for profile in plant_profiles:
+        if profile["name"] == "tomato" and air_temp > profile["airTemp"]:
+            # Perform action for tomato
+            pass  # Placeholder for action
+        elif profile["name"] == "strawberry" and humidity < profile["humidity"]:
+            # Perform action for strawberry
+            pass  # Placeholder for action
+        # Add more conditions for other plants as needed
+
+    # Delay for a while before next iteration
+    time.sleep(1)
+
+# Close the database connection when done
+client.close()
+
