@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Importing Materialize CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
-    <!-- Compiled and minified JavaScript -->
+    <!-- Importing Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <!-- Setting up document metadata -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     
+    <!-- Internal CSS styles -->
     <style>
         body {
-          
             background-color: lightblue;
         }
 
@@ -19,38 +22,47 @@
             text-align: center;
             margin-top: 50px;
         }
-
-       
     </style>
 </head>
 <body>  
+    <!-- Navigation Bar -->
     <nav class="green lighten-1">
-    <div class="nav-wrapper">
-      <a href="#" class="brand-logo center">Greenhouse Login</a>
-      <ul id="nav-mobile" class="left hide-on-med-and-down">
-        
-      </ul>
-    </div>
-  </nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo center">Greenhouse Login</a>
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Login Form Container -->
     <div class="container">
         <div class="row">
+            <!-- Column Spacer -->
             <div class="col s3"></div>
   
+            <!-- Login Form -->
             <div class="col s6 ">
                 <div class="card-panel green lighten-3 center-div ">
+                    <!-- Login Form Submission -->
                     <form action="/login" method="POST">
+                        <!-- Username Input -->
                         <p class="black-text left">Username:</p>
                         <input type="text" name="username" class="form-control" required><br>
+                        <!-- Password Input -->
                         <p class="black-text left">Password:</p>
                         <input type="password" name="password" class="form-control" required><br>
-                        <br>
+                        
+                        <!-- Error Message Display -->
                         {% if error %}
                             <p style="color: red; font-weight: bold">{{error}}</p>
                         {% endif %}
+                        
+                        <!-- Submit Button -->
                         <button type="submit" class="btn btn-primary">Log in</button>
                     </form>
                 </div>
             </div>
+            <!-- Column Spacer -->
             <div class="col s3"></div>
         </div>
     </div>

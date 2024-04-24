@@ -106,15 +106,15 @@ app.get('/envselect', async (req, res) => {
 });
 
 // Route for user's greenhouse
-app.get('/yourgreenhouse', async (req, res) => {
-  connection = await mongoConnect();
-  db = connection.db("GHMS");
-  sensors = db.collection('Sensors');
-  documents = await sensors.find({}).toArray();
-  response_json = JSON.stringify(documents);
-  console.log(documents)
-  return res.render("yourgreenhouse.ejs", {sensors:documents}); 
-});
+//app.get('/yourgreenhouse', async (req, res) => {
+ // connection = await mongoConnect();
+ // db = connection.db("GHMS");
+ // sensors = db.collection('Sensors');
+ // documents = await sensors.find({}).toArray();
+ // response_json = JSON.stringify(documents);
+ // console.log(documents)
+ // return res.render("yourgreenhouse.ejs", {sensors:documents}); 
+//});
 
 // Route for changing greenhouse
 app.get('/changegreenhouse', async (req, res) => {
