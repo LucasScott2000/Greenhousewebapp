@@ -153,6 +153,11 @@ app.get('/menu',(req, res) => {
   return res.render("menu.ejs", {user});
 });
 
+// Route for Settings
+app.get('/settings', (req, res) => {
+  res.render('settings');
+});
+
 // Start server
 const port = 3000;
 app.listen(port, () => {

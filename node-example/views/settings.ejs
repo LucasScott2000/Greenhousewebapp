@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        select,
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center; /* Center the buttons */
+        }
+
+        .symmetrical-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            align-items: center; /* Center the buttons vertically */
+        }
+
+        .symmetrical-box button {
+            width: 100%; /* Make all buttons the same width */
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .box.white {
+            background-color: #fff;
+        }
+
+        button.red {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        button.red:hover {
+            background-color: #c82333;
+        }
+
+        button.green {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        button.green:hover {
+            background-color: #218838;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup .button-group {
+            display: flex;
+        }
+
+        .popup .revert-changes,
+        .popup .save-preferences {
+            flex: 1;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .popup .revert-changes {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .popup .revert-changes:hover {
+            background-color: #c82333;
+        }
+
+        .popup .save-preferences {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .popup .save-preferences:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Settings</h1>
+
+    <div class="container">
+        <div class="box">
+            <h2>User Preferences</h2>
+            <form id="user-preferences-form" action="/user/preferences" method="POST">
+                <label for="preferredUnit">Preferred Unit:</label>
+                <select name="preferredUnit" id="preferredUnit">
+                    <option value="celsius">Celsius</option>
+                    <option value="fahrenheit">Fahrenheit</option>
+                </select>
+                <label for="mode">Mode:</label>
+                <select name="mode" id="mode">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="box white">
+            <h2>Plant Profile Settings</h2>
+            <div class="button-group">
+                <div class="symmetrical-box">
+                    <button>Add Custom Plant Profile</button>
+                    <button>Edit Custom Plant Profile</button>
+                </div>
+                <div class="symmetrical-box">
+                    <button>Revert Profile Override</button>
+                    <button class="red">Delete Custom Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="box white">
+            <h2>User Account Settings</h2>
+            <div class="button-group">
+                <div class="symmetrical-box">
+                    <button>Change Username</button>
+                    <button class="red revert-changes">Restore Factory Defaults</button>
+                </div>
+                <div class="symmetrical-box">
+                    <button class="green save-preferences">Change Password</button>
+                    <button class="red">Deactivate Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup" id="save-preferences-popup">
+        <div class="button-group">
+            <button class="revert-changes red">Revert Changes</button>
+            <button class="save-preferences">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('user-preferences-form');
+        const popup = document.getElementById('save-preferences-popup');
+        const revertButton = document.querySelector('.revert-changes');
+        const saveButton = document.querySelector('.save-preferences');
+
+        // Event listener for changes in form
+        form.addEventListener('change', () => {
+            popup.style.display = 'block';
+        });
+
+        // Event listener for revert changes button
+        revertButton.addEventListener('click', () => {
+            // Reset form to its initial state
+            form.reset();
+            // Hide popup
+            popup.style.display = 'none';
+        });
+
+        // Event listener for save changes button
+        saveButton.addEventListener('click', () => {
+            // Perform actions to save preferences and update database
+            // For demonstration, simply log a message
+            console.log('Preferences saved and updated in database.');
+            // Hide popup
+            popup.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

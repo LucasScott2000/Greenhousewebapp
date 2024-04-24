@@ -1,25 +1,26 @@
+// usersettingsscript.js
 const mongoose = require('mongoose');
 const UserSettings = require('./models/usersettings'); // Import the UserSettings model
 
-// Connect to your MongoDB database (replace the connection string with your own)
+// Connect to MongoDB with the correct database
 mongoose.connect('mongodb+srv://lscott:Mine513jw62@clusterghms.mqurwz8.mongodb.net/GHMS?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Define user data
+// Define user data with preferences
 const usersData = [
     {
-        user: '659f0b61cab9ed772220d1f2', // Lucas
+        user: '659f0b61cab9ed772220d1f2', // Replace with the ObjectId of the user
         preferredUnit: 'celsius',
         mode: 'light',
         revertProfileOverwrite: false
     },
     {
-        user: '6609c7fed7f853a33ae43898', // Calum
-        preferredUnit: 'celsius',
-        mode: 'light',
-        revertProfileOverwrite: false
+        user: '6609c7fed7f853a33ae43898', // Replace with the ObjectId of the user
+        preferredUnit: 'fahrenheit',
+        mode: 'dark',
+        revertProfileOverwrite: true
     },
     {
-        user: '6609c80fd7f853a33ae43899', // James
+        user: '6609c80fd7f853a33ae43899', // Replace with the ObjectId of the user
         preferredUnit: 'celsius',
         mode: 'light',
         revertProfileOverwrite: false
