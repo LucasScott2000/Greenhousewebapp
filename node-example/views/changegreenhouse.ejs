@@ -1,31 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Greenhouse Environment</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <style> body {
-        background-color: lightblue;
-      }</style>
-    <body>
-        <nav class="green lighten-1">
-            <div class="nav-wrapper">
-              <a href="#" class="brand-logo center">Change Greenhouse Enviroment</a>
-              <ul id="nav-mobile" class="left hide-on-med-and-down">
-                <li><a href="/login">Logout</a></li>
-                <li><a href="/menu"> Home Menu</a></li>
-              </ul>
-            </div>
-          </nav>
-          <br>
-        <div class="container">
-           <div class="row">
-                {% for sensor in sensors %}
-                <div class="col s4" >
-                    <div class="card-panel green lighten-3">Sensor : {{ sensor.sensor_type | replace("_", " ") | title  }} <br> Value : {{ sensor.value }} <br> Timestamp : {{ sensor.timestamp }}</div>
-                </div>
-                {% endfor %}
-            </div> 
+    <style>
+        body {
+            background-color: lightblue;
+        }
+        .container {
+            padding-top: 20px; /* Add some padding to center the content */
+        }
+        .profile-box {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        /* New styles for white boxes behind parameter options */
+        .parameter-box {
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="green lighten-1">
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo center">Change Greenhouse Environment</a>
+          <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="/login">Logout</a></li>
+            <li><a href="/menu"> Home Menu</a></li>
+          </ul>
         </div>
-    
-    </body>
-    
+      </nav>
+      <div class="container">
+        <!-- Dropdown Trigger -->
+        <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Modification Options</a>
+
+        <!-- Dropdown Structure -->
+        <ul id='dropdown1' class='dropdown-content'>
+          <li><a href="#!" onclick="showManualParameters()">Manually Change Parameters</a></li>
+          <li><a href="#!" onclick="showEnvironmentProfile()">Select Environment Profile</a></li>
+        </ul>
+
+        <!-- Content Divs -->
+        <div id="manualParameters" style="display: none;">
+          <!-- Content for Manually Change Parameters -->
+          <h4>Manually Change Parameters</h4>
+          <div class="row">
+            <div class="col s12 m4">
+              <div class="parameter-box">
+                <h5>Air Temperature</h5>
+                <!-- Add your content here -->
+                <!-- For example: -->
+                <input type="number" id="airTemperature" placeholder="Desired Air Temperature">
+              </div>
+            </div>
+            <div class="col s12 m4">
+              <div class="parameter-box">
+                <h5>Humidity</h5>
+                <!-- Add your content here -->
+                <!-- For example: -->
+                <input type="number" id="humidity" placeholder="Desired Humidity">
+              </div>
+            </div>
+            <div class="col s12 m4">
+              <div class="parameter-box">
+                <h5>Air Pressure</h5>
+                <!-- Add your content here -->
+                <!-- For example: -->
+                <input type="number" id="airPressure" placeholder="Desired Air Pressure">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="environmentProfile" style="display: none;">
+          <!-- Content for Select Environment Profile -->
+          <h4>Select Environment Profile</h4>
+          <div id="profileContainer" class="row">
+            <!-- Plant profiles will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var elems = document.querySelectorAll('.dropdown-trigger');
+          var instances = M.Dropdown.init(elems, {});
+          fetchPlantProfiles();
+        });
+
+        async function fetchPlantProfiles() {
+          try {
+            const response = await fetch('/plant-profiles');
+            const plantProfiles = await response.json();
+            displayPlantProfiles(plantProfiles);
+          } catch (error) {
+            console.error('Error fetching plant profiles:', error);
+          }
+        }
+
+        function displayPlantProfiles(plantProfiles) {
+          const profileContainer = document.getElementById('profileContainer');
+          profileContainer.innerHTML = ''; // Clear existing content
+
+          plantProfiles.forEach(profile => {
+            const profileBox = document.createElement('div');
+            profileBox.classList.add('col', 's12', 'm4');
+            profileBox.innerHTML = `
+              <div class="profile-box">
+                <h5>${profile.name}</h5>
+                <p><strong>Scientific Name:</strong> ${profile.scientific_name}</p>
+                <p>${profile.description}</p>
+                <h6>Growth Stages:</h6>
+                <ul>
+                  ${profile.growth_stages.map(stage => `<li><strong>${stage.stage}:</strong> ${stage.description}</li>`).join('')}
+                </ul>
+                <h6>Environmental Requirements:</h6>
+                <p><strong>Air Temperature:</strong> ${profile.environmental_requirements.airTemp.min}-${profile.environmental_requirements.airTemp.max} ${profile.environmental_requirements.airTemp.unit}</p>
+                <p><strong>Humidity:</strong> ${profile.environmental_requirements.humidity.min}-${profile.environmental_requirements.humidity.max} ${profile.environmental_requirements.humidity.unit}</p>
+                <p><strong>Air Pressure:</strong> ${profile.environmental_requirements.airPress.min}-${profile.environmental_requirements.airPress.max} ${profile.environmental_requirements.airPress.unit}</p>
+                <p><strong>Light:</strong> ${profile.environmental_requirements.light}</p>
+              </div>
+            `;
+            profileContainer.appendChild(profileBox);
+          });
+        }
+
+        function showManualParameters() {
+          document.getElementById("manualParameters").style.display = "block";
+          document.getElementById("environmentProfile").style.display = "none";
+        }
+
+        function showEnvironmentProfile() {
+          document.getElementById("manualParameters").style.display = "none";
+          document.getElementById("environmentProfile").style.display = "block";
+        }
+      </script>
+</body>
+</html>
