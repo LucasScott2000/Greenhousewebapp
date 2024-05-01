@@ -8,19 +8,19 @@ mongoose.connect('mongodb+srv://lscott:Mine513jw62@clusterghms.mqurwz8.mongodb.n
 // Define user data with preferences
 const usersData = [
     {
-        user: '659f0b61cab9ed772220d1f2', // Replace with the ObjectId of the user
+        user: '659f0b61cab9ed772220d1f2', // lucas
         preferredUnit: 'celsius',
         mode: 'light',
         revertProfileOverwrite: false
     },
     {
-        user: '6609c7fed7f853a33ae43898', // Replace with the ObjectId of the user
+        user: '6609c7fed7f853a33ae43898', // calum
         preferredUnit: 'fahrenheit',
         mode: 'dark',
         revertProfileOverwrite: true
     },
     {
-        user: '6609c80fd7f853a33ae43899', // Replace with the ObjectId of the user
+        user: '6609c80fd7f853a33ae43899', // james
         preferredUnit: 'celsius',
         mode: 'light',
         revertProfileOverwrite: false
