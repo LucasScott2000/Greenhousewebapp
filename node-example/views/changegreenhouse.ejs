@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Greenhouse Environment</title>
-    <!-- Compiled and minified CSS -->
+    <!-- CSS stylesheets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <style>
+        /* Inline CSS styles */
         body {
             background-color: lightblue;
         }
         .container {
             padding-top: 20px; /* Add some padding to center the content */
         }
+        /* Styles for profile boxes */
         .profile-box {
             padding: 20px;
             margin-bottom: 20px;
@@ -30,6 +33,7 @@
     </style>
 </head>
 <body>
+    <!-- Navigation bar -->
     <nav class="green lighten-1">
         <div class="nav-wrapper">
           <a href="#" class="brand-logo center">Change Greenhouse Environment</a>
@@ -39,6 +43,7 @@
           </ul>
         </div>
       </nav>
+      <!-- Main content container -->
       <div class="container">
         <!-- Dropdown Trigger -->
         <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Modification Options</a>
@@ -54,27 +59,25 @@
           <!-- Content for Manually Change Parameters -->
           <h4>Manually Change Parameters</h4>
           <div class="row">
+            <!-- Input fields for air temperature, humidity, and air pressure -->
             <div class="col s12 m4">
               <div class="parameter-box">
                 <h5>Air Temperature</h5>
-                <!-- Add your content here -->
-                <!-- For example: -->
+                <!-- Input field for air temperature -->
                 <input type="number" id="airTemperature" placeholder="Desired Air Temperature">
               </div>
             </div>
             <div class="col s12 m4">
               <div class="parameter-box">
                 <h5>Humidity</h5>
-                <!-- Add your content here -->
-                <!-- For example: -->
+                <!-- Input field for humidity -->
                 <input type="number" id="humidity" placeholder="Desired Humidity">
               </div>
             </div>
             <div class="col s12 m4">
               <div class="parameter-box">
                 <h5>Air Pressure</h5>
-                <!-- Add your content here -->
-                <!-- For example: -->
+                <!-- Input field for air pressure -->
                 <input type="number" id="airPressure" placeholder="Desired Air Pressure">
               </div>
             </div>
@@ -82,71 +85,107 @@
         </div>
 
         <div id="environmentProfile" style="display: none;">
-          <!-- This section will be populated with the fetched plant profiles -->
+          <!-- Content for selecting environment profile -->
           <h4>Select Environment Profile</h4>
           <select id="environmentProfileSelect" onchange="selectEnvironmentProfile()">
             <!-- Options will be dynamically added here -->
           </select>
         </div>
+
+        <!-- Profile details -->
+        <div id="profileDetails"></div>
+
       </div>
 
+      <!-- JavaScript scripts -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
       <script>
+        // This function runs when the DOM content is loaded
         document.addEventListener('DOMContentLoaded', function() {
-          var elems = document.querySelectorAll('.dropdown-trigger');
-          var instances = M.Dropdown.init(elems, {});
-          fetchPlantProfiles();
+            var elems = document.querySelectorAll('.dropdown-trigger');
+            var instances = M.Dropdown.init(elems, {});
+            fetchPlantProfiles();
         });
 
         async function fetchPlantProfiles() {
-          try {
-            const response = await fetch('/plant-profiles');
-            const plantProfiles = await response.json();
-            displayPlantProfiles(plantProfiles);
-          } catch (error) {
-            console.error('Error fetching plant profiles:', error);
-          }
+            try {
+                const response = await fetch('http://localhost:3000/getplantprofile');
+                const plantProfiles = await response.json();
+                displayPlantProfiles(plantProfiles);
+            } catch (error) {
+                console.error('Error fetching plant profiles:', error);
+            }
+        selectEnvironmentProfile() 
+
         }
 
         function displayPlantProfiles(plantProfiles) {
-            const environmentProfileSelect = document.getElementById("environmentProfileSelect");
-            environmentProfileSelect.innerHTML = ''; // Clear existing options
-
+            const selectElement = document.getElementById("environmentProfileSelect");
+            // Clear existing options
+            selectElement.innerHTML = '';
+            
             // Add a default option
             const defaultOption = document.createElement("option");
             defaultOption.text = "Select a Profile";
             defaultOption.disabled = true;
             defaultOption.selected = true;
-            environmentProfileSelect.appendChild(defaultOption);
-
+            selectElement.appendChild(defaultOption);
+            
             // Add options for each plant profile
             plantProfiles.forEach(profile => {
                 const option = document.createElement("option");
                 option.value = profile._id;
                 option.text = profile.name;
-                environmentProfileSelect.appendChild(option);
+                selectElement.appendChild(option);
             });
 
             // Initialize Materialize select dropdown
-            M.FormSelect.init(environmentProfileSelect);
+            M.FormSelect.init(selectElement);
         }
 
         function selectEnvironmentProfile() {
             const selectElement = document.getElementById("environmentProfileSelect");
             const selectedProfileId = selectElement.value;
-            
-            // Do something with the selected profile ID
-            console.log("Selected environment profile ID:", selectedProfileId);
+
+            // Fetch details of the selected profile from the database
+            fetch(`http://localhost:3000/getplantprofile/${selectedProfileId}`)
+                .then(response => response.json())
+                .then(profile => {
+                    console.log(profile); // Log the fetched profile details
+                    // Update the HTML to display the profile details
+                    const profileDetailsElement = document.getElementById("profileDetails");
+                    profileDetailsElement.innerHTML = `
+                        <h4>${profile.name}</h4>
+                        <p><strong>Scientific Name:</strong> ${profile.scientific_name}</p>
+                        <p><strong>Description:</strong> ${profile.description}</p>
+                        <h5>Growth Stages</h5>
+                        <ul>
+                            ${profile.growth_stages.map(stage => `<li><strong>${stage.stage}:</strong> ${stage.description}</li>`).join('')}
+                        </ul>
+                        <h5>Environmental Requirements</h5>
+                        <p><strong>Air Temperature:</strong> ${profile.environmental_requirements.airTemp.min}-${profile.environmental_requirements.airTemp.max} ${profile.environmental_requirements.airTemp.unit}</p>
+                        <p><strong>Humidity:</strong> ${profile.environmental_requirements.humidity.min}-${profile.environmental_requirements.humidity.max} ${profile.environmental_requirements.humidity.unit}</p>
+                        <p><strong>Air Pressure:</strong> ${profile.environmental_requirements.airPress.min}-${profile.environmental_requirements.airPress.max} ${profile.environmental_requirements.airPress.unit}</p>
+                        <p><strong>Light:</strong> ${profile.environmental_requirements.light}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching profile details:', error);
+                });
         }
 
         function showManualParameters() {
-          document.getElementById("manualParameters").style.display = "block";
-          document.getElementById("environmentProfile").style.display = "none";
+            document.getElementById("manualParameters").style.display = "block";
+            document.getElementById("environmentProfile").style.display = "none";
+            // Clear profile details when switching to manual parameters
+            document.getElementById("profileDetails").innerHTML = "";
         }
 
         function showEnvironmentProfile() {
-          document.getElementById("manualParameters").style.display = "none";
-          document.getElementById("environmentProfile").style.display = "block";
+            document.getElementById("manualParameters").style.display = "none";
+            document.getElementById("environmentProfile").style.display = "block";
+            // Clear profile details when switching to environment profile selection
+            document.getElementById("profileDetails").innerHTML = "";
         }
       </script>
 </body>

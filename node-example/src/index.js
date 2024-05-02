@@ -147,6 +147,15 @@ app.get('/getsensordata', async (req, res) => {
   return res.json(documents);
 });
 
+app.get('/getplantprofile', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  profile = db.collection('PlantProfiles');
+  documents = await profile.find({}).toArray();
+  res.setHeader('Content-Type', 'application/json');
+  return res.json(documents);
+});
+
 // Route for menu
 app.get('/menu',(req, res) => {
   let user = req.query.user;
