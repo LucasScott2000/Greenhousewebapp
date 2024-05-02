@@ -101,6 +101,8 @@
             <option value="662247a60da40eabd6ea3c46">Blueberry</option>
             <option value="662247630da40eabd6ea3c45">Onion</option>
           </select>
+          <!-- Save button -->
+          <button id="saveButtonSelect" class="btn green save-button" onclick="saveChangesProfile()" style="display: none;">Save Environmental Changes</button>
         </div>
 
         <!-- Profile details -->
@@ -166,7 +168,8 @@
             displayProfileDetails(selectedProfile);
 
             // Show the save button
-            document.getElementById("saveButton").style.display = "block";
+            document.getElementById("saveButton").style.display = "none";
+            document.getElementById("saveButtonSelect").style.display = "block";
         }
 
         function displayProfileDetails(profile) {
@@ -198,12 +201,18 @@
             alert(`Air Temperature: ${airTemperature}, Humidity: ${humidity}, Air Pressure: ${airPressure}`);
         }
 
+        function saveChangesProfile() {
+            // Implement saving changes for profile selection here
+            alert("Changes saved successfully!");
+        }
+
         function showManualParameters() {
             document.getElementById("manualParameters").style.display = "block";
             document.getElementById("environmentProfile").style.display = "none";
             // Clear profile details when switching to manual parameters
             document.getElementById("profileDetails").innerHTML = "";
             // Hide the save button
+            document.getElementById("saveButtonSelect").style.display = "none";
             document.getElementById("saveButton").style.display = "none";
         }
 
@@ -213,6 +222,7 @@
             // Clear profile details when switching to environment profile selection
             document.getElementById("profileDetails").innerHTML = "";
             // Hide the save button
+            document.getElementById("saveButtonSelect").style.display = "none";
             document.getElementById("saveButton").style.display = "none";
         }
 
