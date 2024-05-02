@@ -9,12 +9,14 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: lightblue;
         }
 
         h1 {
-            color: #333;
+            color: #ffffff;
             text-align: center;
+            text-indent: 435%;
+            font-weight: normal;
         }
 
         .container {
@@ -39,6 +41,14 @@
             color: #333;
             font-size: 20px;
             margin-bottom: 15px;
+            /* Remove bold font weight */
+        }
+
+        a {
+            text-decoration: none;
+            text-align: left;
+            margin-left: 30px;
+            color: #fff;
         }
 
         form {
@@ -105,12 +115,16 @@
         }
 
         button.green {
-            background-color: #28a745;
-            color: #fff;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
         }
 
         button.green:hover {
-            background-color: #218838;
+            background-color: #45a049;
         }
 
         .popup {
@@ -155,10 +169,26 @@
         .popup .save-preferences:hover {
             background-color: #218838;
         }
+
+        .green-banner {
+            background-color: #66bb6a;
+            color: white;
+            padding: 0px; 
+            font-size: 14px; 
+            display: inline-flex;
+            align-items: center;
+            width: 100%;
+        
+        }
     </style>
 </head>
 <body>
-    <h1>Settings</h1>
+    <!-- Green banner with home button and logout functionality -->
+    <div class="green-banner">
+        <a href="/login">Logout</a>
+        <a href="/menu">Home</a>
+        <h1>Settings</h1>
+    </div>
 
     <div class="container">
         <div class="box">
