@@ -147,6 +147,22 @@ app.get('/getsensordata', async (req, res) => {
   return res.json(documents);
 });
 
+// Route to get actuator states
+app.get('/getactuatorstates', async (req, res) => {
+  try {
+    connection = await mongoConnect();
+    db = connection.db("GHMS");
+    actuators = db.collection('Actuators');
+    documents = await actuators.find({}).toArray();
+    res.setHeader('Content-Type', 'application/json');
+    return res.json(documents);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error("Error retrieving actuator states:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.get('/getplantprofile', async (req, res) => {
   connection = await mongoConnect();
   db = connection.db("GHMS");

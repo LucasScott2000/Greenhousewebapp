@@ -1,11 +1,17 @@
-<!-- Compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>  
-<style> body {
-    background-color: lightblue;
-  }</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhouse Data and Status</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            background-color: lightblue;
+        }
+    </style>
+</head>
 <body>
     <nav class="green lighten-1">
         <div class="nav-wrapper">
@@ -21,43 +27,78 @@
       <div id="sensors" class="row">
             {% for sensor in sensors %}
             <div class="col s4" >
-                <div id="{{ sensor.sensor_type }}" class="card-panel green lighten-3">Sensor : {{ sensor.sensor_type | replace("_", " ") | title  }} <br> Value : {{ sensor.value }} <br> Timestamp : {{ sensor.timestamp }}</div>
+                <div id="{{ sensor.sensor_type }}" class="card-panel green lighten-3">Sensor : 
+                    {% if sensor.sensor_type == "airTemp" %}
+                        Air Temperature (°C)
+                    {% elif sensor.sensor_type == "humidity" %}
+                        Humidity (%)
+                    {% elif sensor.sensor_type == "airPress" %}
+                        Air Pressure (hPa)
+                    {% endif %}
+                    <br> Current Value : {{ sensor.value }}
+                    {% if sensor.sensor_type == "airTemp" %}
+                        °C
+                    {% elif sensor.sensor_type == "humidity" %}
+                        %
+                    {% elif sensor.sensor_type == "airPress" %}
+                        hPa
+                    {% endif %}
+                    <br> Timestamp : {{ sensor.timestamp }}</div>
             </div>
             {% endfor %}
         </div> 
     </div>
 
-</body>
-<script>
-  function run() {
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>  
 
-    // Creating Our XMLHttpRequest object 
-    let xhr = new XMLHttpRequest();
+    <script>
+      function run() {
 
-   // Making our connection  
-    let url = 'http://localhost:3000/getsensordata';
-   xhr.open("GET", url, true);
+        // Creating Our XMLHttpRequest object 
+        let xhr = new XMLHttpRequest();
 
-    // function execute after request is successful 
-   xhr.onreadystatechange = function () {
-       if (this.readyState == 4 && this.status == 200) {
-        const jsonResponse = JSON.parse(this.responseText);
-        jsonResponse.forEach(sensor => {
-          // Get the sensor type and value 
-          const sensorType = sensor.sensor_type;
-          const sensorValue = sensor.value;
+       // Making our connection  
+        let url = 'http://localhost:3000/getsensordata';
+       xhr.open("GET", url, true);
 
-          // Update the HTML content of the sensor's div with the new value
-          const sensorDiv = document.getElementById(sensorType);
-          console.log(sensorDiv);
-          if (sensorDiv) {
-              sensorDiv.innerHTML = `Sensor: ${sensorType}<br>Value: ${sensorValue}<br>Timestamp: ${sensor.timestamp}`;
-          }
-      });
+        // function execute after request is successful 
+       xhr.onreadystatechange = function () {
+           if (this.readyState == 4 && this.status == 200) {
+            const jsonResponse = JSON.parse(this.responseText);
+            jsonResponse.forEach(sensor => {
+              // Get the sensor type and value 
+              const sensorType = sensor.sensor_type;
+              const sensorValue = sensor.value;
+
+              // Format the timestamp
+              const timestamp = new Date(sensor.timestamp);
+              const formattedTimestamp = timestamp.toLocaleString();
+
+              // Update the HTML content of the sensor's div with the new value and formatted timestamp
+              const sensorDiv = document.getElementById(sensorType);
+              if (sensorDiv) {
+                  sensorDiv.innerHTML = `Sensor: 
+                    ${sensorType == "airTemp" ? "Air Temperature (°C)" : 
+                      sensorType == "humidity" ? "Humidity (%)" : 
+                      sensorType == "airPress" ? "Air Pressure (hPa)" : sensorType}
+                    <br>Current Value: ${sensorValue}
+                    {% if sensor.sensor_type == "airTemp" %}
+                        °C
+                    {% elif sensor.sensor_type == "humidity" %}
+                        %
+                    {% elif sensor.sensor_type == "airPress" %}
+                        hPa
+                    {% endif %}
+                    <br>Timestamp: ${formattedTimestamp}`;
+              }
+          });
+           }
        }
-   }
-    // Sending our request 
-    xhr.send();
-}
-setInterval(run, 2000);
-</script>
+        // Sending our request 
+        xhr.send();
+    }
+    setInterval(run, 2000);
+    </script>
+</body>
+</html>
