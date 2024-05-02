@@ -30,6 +30,10 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
             margin-bottom: 20px;
         }
+        /* Style for the save button */
+        .save-button {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -64,24 +68,26 @@
               <div class="parameter-box">
                 <h5>Air Temperature</h5>
                 <!-- Input field for air temperature -->
-                <input type="number" id="airTemperature" placeholder="Desired Air Temperature">
+                <input type="number" id="airTemperature" placeholder="Desired Air Temperature" oninput="showSaveButton()">
               </div>
             </div>
             <div class="col s12 m4">
               <div class="parameter-box">
                 <h5>Humidity</h5>
                 <!-- Input field for humidity -->
-                <input type="number" id="humidity" placeholder="Desired Humidity">
+                <input type="number" id="humidity" placeholder="Desired Humidity" oninput="showSaveButton()">
               </div>
             </div>
             <div class="col s12 m4">
               <div class="parameter-box">
                 <h5>Air Pressure</h5>
                 <!-- Input field for air pressure -->
-                <input type="number" id="airPressure" placeholder="Desired Air Pressure">
+                <input type="number" id="airPressure" placeholder="Desired Air Pressure" oninput="showSaveButton()">
               </div>
             </div>
           </div>
+          <!-- Save button -->
+          <button id="saveButton" class="btn green save-button" onclick="saveChangesManually()" style="display: none;">Save Environmental Changes</button>
         </div>
 
         <div id="environmentProfile" style="display: none;">
@@ -89,6 +95,11 @@
           <h4>Select Environment Profile</h4>
           <select id="environmentProfileSelect" onchange="selectEnvironmentProfile()">
             <!-- Options will be dynamically added here -->
+            <option value="6609bfcbd7f853a33ae43890">Tomato</option>
+            <option value="662246000da40eabd6ea3c43">Strawberry</option>
+            <option value="6622474b0da40eabd6ea3c44">Potato</option>
+            <option value="662247a60da40eabd6ea3c46">Blueberry</option>
+            <option value="662247630da40eabd6ea3c45">Onion</option>
           </select>
         </div>
 
@@ -100,6 +111,9 @@
       <!-- JavaScript scripts -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
       <script>
+        // Define plantProfiles globally
+        let plantProfiles;
+
         // This function runs when the DOM content is loaded
         document.addEventListener('DOMContentLoaded', function() {
             var elems = document.querySelectorAll('.dropdown-trigger');
@@ -110,13 +124,11 @@
         async function fetchPlantProfiles() {
             try {
                 const response = await fetch('http://localhost:3000/getplantprofile');
-                const plantProfiles = await response.json();
+                plantProfiles = await response.json();
                 displayPlantProfiles(plantProfiles);
             } catch (error) {
                 console.error('Error fetching plant profiles:', error);
             }
-        selectEnvironmentProfile() 
-
         }
 
         function displayPlantProfiles(plantProfiles) {
@@ -147,31 +159,43 @@
             const selectElement = document.getElementById("environmentProfileSelect");
             const selectedProfileId = selectElement.value;
 
-            // Fetch details of the selected profile from the database
-            fetch(`http://localhost:3000/getplantprofile/${selectedProfileId}`)
-                .then(response => response.json())
-                .then(profile => {
-                    console.log(profile); // Log the fetched profile details
-                    // Update the HTML to display the profile details
-                    const profileDetailsElement = document.getElementById("profileDetails");
-                    profileDetailsElement.innerHTML = `
-                        <h4>${profile.name}</h4>
-                        <p><strong>Scientific Name:</strong> ${profile.scientific_name}</p>
-                        <p><strong>Description:</strong> ${profile.description}</p>
-                        <h5>Growth Stages</h5>
-                        <ul>
-                            ${profile.growth_stages.map(stage => `<li><strong>${stage.stage}:</strong> ${stage.description}</li>`).join('')}
-                        </ul>
-                        <h5>Environmental Requirements</h5>
-                        <p><strong>Air Temperature:</strong> ${profile.environmental_requirements.airTemp.min}-${profile.environmental_requirements.airTemp.max} ${profile.environmental_requirements.airTemp.unit}</p>
-                        <p><strong>Humidity:</strong> ${profile.environmental_requirements.humidity.min}-${profile.environmental_requirements.humidity.max} ${profile.environmental_requirements.humidity.unit}</p>
-                        <p><strong>Air Pressure:</strong> ${profile.environmental_requirements.airPress.min}-${profile.environmental_requirements.airPress.max} ${profile.environmental_requirements.airPress.unit}</p>
-                        <p><strong>Light:</strong> ${profile.environmental_requirements.light}</p>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Error fetching profile details:', error);
-                });
+            // Find the selected profile in the fetched plant profiles
+            const selectedProfile = plantProfiles.find(profile => profile._id === selectedProfileId);
+
+            // Display the details of the selected profile
+            displayProfileDetails(selectedProfile);
+
+            // Show the save button
+            document.getElementById("saveButton").style.display = "block";
+        }
+
+        function displayProfileDetails(profile) {
+            // Update the HTML to display the profile details
+            const profileDetailsElement = document.getElementById("profileDetails");
+            profileDetailsElement.innerHTML = `
+                <h4>${profile.name}</h4>
+                <p><strong>Scientific Name:</strong> ${profile.scientific_name}</p>
+                <p><strong>Description:</strong> ${profile.description}</p>
+                <h5>Growth Stages</h5>
+                <ul>
+                    ${profile.growth_stages.map(stage => `<li><strong>${stage.stage}:</strong> ${stage.description}</li>`).join('')}
+                </ul>
+                <h5>Environmental Requirements</h5>
+                <p><strong>Air Temperature:</strong> ${profile.environmental_requirements.airTemp.min}-${profile.environmental_requirements.airTemp.max} ${profile.environmental_requirements.airTemp.unit}</p>
+                <p><strong>Humidity:</strong> ${profile.environmental_requirements.humidity.min}-${profile.environmental_requirements.humidity.max} ${profile.environmental_requirements.humidity.unit}</p>
+                <p><strong>Air Pressure:</strong> ${profile.environmental_requirements.airPress.min}-${profile.environmental_requirements.airPress.max} ${profile.environmental_requirements.airPress.unit}</p>
+                <p><strong>Light:</strong> ${profile.environmental_requirements.light}</p>
+            `;
+        }
+
+        function saveChangesManually() {
+            // Retrieve the manually entered parameters
+            const airTemperature = document.getElementById("airTemperature").value;
+            const humidity = document.getElementById("humidity").value;
+            const airPressure = document.getElementById("airPressure").value;
+
+            // Implement saving changes here (for demonstration, just alerting the values)
+            alert(`Air Temperature: ${airTemperature}, Humidity: ${humidity}, Air Pressure: ${airPressure}`);
         }
 
         function showManualParameters() {
@@ -179,6 +203,8 @@
             document.getElementById("environmentProfile").style.display = "none";
             // Clear profile details when switching to manual parameters
             document.getElementById("profileDetails").innerHTML = "";
+            // Hide the save button
+            document.getElementById("saveButton").style.display = "none";
         }
 
         function showEnvironmentProfile() {
@@ -186,6 +212,13 @@
             document.getElementById("environmentProfile").style.display = "block";
             // Clear profile details when switching to environment profile selection
             document.getElementById("profileDetails").innerHTML = "";
+            // Hide the save button
+            document.getElementById("saveButton").style.display = "none";
+        }
+
+        function showSaveButton() {
+            // Show the save button
+            document.getElementById("saveButton").style.display = "block";
         }
       </script>
 </body>
