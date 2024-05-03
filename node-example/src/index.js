@@ -172,6 +172,80 @@ app.get('/getplantprofile', async (req, res) => {
   return res.json(documents);
 });
 
+app.get('/getactuators', async (req, res) => {
+  connection = await mongoConnect();
+  db = connection.db("GHMS");
+  profile = db.collection('Actuators');
+  documents = await profile.find({}).toArray();
+  res.setHeader('Content-Type', 'application/json');
+  return res.json(documents);
+});
+
+// Route to update actuators
+// Route to update actuators
+// Route to update actuators
+const { MongoClient, ObjectId } = require('mongodb');
+
+// Update actuators route - THIS CODE UPDATES THE ACTUATORS
+// app.post('/updateactuators', async (req, res) => {
+//   // Assuming req.body contains the data to update
+//   const newData = req.body;
+
+//   try {
+//     // Connect to the MongoDB database
+//     const connection = await mongoConnect();
+//     const db = connection.db("GHMS");
+//     const profile = db.collection('Actuators');
+
+//     // Update the data in the database
+//     await profile.updateMany({}, { $set: newData });
+
+//     // Fetch the updated data from the database
+//     const updatedData = await profile.find({}).toArray();
+
+//     // Respond with the updated data
+//     res.setHeader('Content-Type', 'application/json');
+//     return res.json(updatedData);
+//   } catch (error) {
+//     // Handle errors
+//     console.error("Error updating data:", error);
+//     res.status(500).json({ error: "Error updating data" });
+//   }
+// });
+
+app.post('/updateactuator/:actuatorName', async (req, res) => {
+  try {
+    const { actuatorName } = req.params;
+    const newData = req.body;
+
+    // Connect to the MongoDB database
+    const connection = await mongoConnect();
+    const db = connection.db("GHMS");
+    const profile = db.collection('Actuators');
+
+    // Update the specific actuator's data in the database
+    await profile.updateOne({ actuator_name: actuatorName }, { $set: newData });
+
+    // Fetch the updated data from the database
+    const updatedData = await profile.findOne({ actuator_name: actuatorName });
+
+    // Respond with the updated data
+    res.setHeader('Content-Type', 'application/json');
+    return res.json(updatedData);
+  } catch (error) {
+    // Handle errors
+    console.error("Error updating data:", error);
+    res.status(500).json({ error: "Error updating data" });
+  }
+});
+
+
+
+
+
+
+   
+
 // Route for menu
 app.get('/menu',(req, res) => {
   let user = req.query.user;

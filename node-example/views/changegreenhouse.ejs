@@ -41,79 +41,78 @@
     <!-- Navigation bar -->
     <nav class="green lighten-1">
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo center">Change Greenhouse Environment</a>
-          <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="/login">Logout</a></li>
-            <li><a href="/menu"> Home Menu</a></li>
-          </ul>
+            <a href="#" class="brand-logo center">Change Greenhouse Environment</a>
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="/login">Logout</a></li>
+                <li><a href="/menu"> Home Menu</a></li>
+            </ul>
         </div>
-      </nav>
-      <!-- Main content container -->
-      <div class="container">
+    </nav>
+    <!-- Main content container -->
+    <div class="container">
         <!-- Dropdown Trigger -->
         <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Modification Options</a>
 
         <!-- Dropdown Structure -->
         <ul id='dropdown1' class='dropdown-content'>
-          <li><a href="#!" onclick="showManualParameters()">Manually Change Parameters</a></li>
-          <li><a href="#!" onclick="showEnvironmentProfile()">Select Environment Profile</a></li>
+            <li><a href="#!" onclick="showManualParameters()">Manually Change Parameters</a></li>
+            <li><a href="#!" onclick="showEnvironmentProfile()">Select Environment Profile</a></li>
         </ul>
 
         <!-- Content Divs -->
         <div id="manualParameters" style="display: none;">
-          <!-- Content for Manually Change Parameters -->
-          <h4>Manually Change Parameters</h4>
-          <div class="row">
-            <!-- Input fields for air temperature, humidity, and air pressure -->
-            <div class="col s12 m4">
-              <div class="parameter-box">
-                <h5>Air Temperature</h5>
-                <!-- Input field for air temperature -->
-                <input type="number" id="airTemperature" placeholder="Desired Air Temperature" oninput="showSaveButton()">
-              </div>
+            <!-- Content for Manually Change Parameters -->
+            <h4>Manually Change Parameters</h4>
+            <div class="row">
+                <!-- Input fields for air temperature, humidity, and air pressure -->
+                <div class="col s12 m4">
+                    <div class="parameter-box">
+                        <h5>Air Temperature</h5>
+                        <!-- Input field for air temperature -->
+                        <input type="number" id="airTemperature" placeholder="Desired Air Temperature" oninput="showSaveButton()">
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <div class="parameter-box">
+                        <h5>Humidity</h5>
+                        <!-- Input field for humidity -->
+                        <input type="number" id="humidity" placeholder="Desired Humidity" oninput="showSaveButton()">
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <div class="parameter-box">
+                        <h5>Air Pressure</h5>
+                        <!-- Input field for air pressure -->
+                        <input type="number" id="airPressure" placeholder="Desired Air Pressure" oninput="showSaveButton()">
+                    </div>
+                </div>
             </div>
-            <div class="col s12 m4">
-              <div class="parameter-box">
-                <h5>Humidity</h5>
-                <!-- Input field for humidity -->
-                <input type="number" id="humidity" placeholder="Desired Humidity" oninput="showSaveButton()">
-              </div>
-            </div>
-            <div class="col s12 m4">
-              <div class="parameter-box">
-                <h5>Air Pressure</h5>
-                <!-- Input field for air pressure -->
-                <input type="number" id="airPressure" placeholder="Desired Air Pressure" oninput="showSaveButton()">
-              </div>
-            </div>
-          </div>
-          <!-- Save button -->
-          <button id="saveButton" class="btn green save-button" onclick="saveChangesManually()" style="display: none;">Save Environmental Changes</button>
+            <!-- Save button -->
+            <button id="saveButton" class="btn green save-button" onclick="saveChangesManually()" style="display: none;">Save Environmental Changes</button>
         </div>
 
         <div id="environmentProfile" style="display: none;">
-          <!-- Content for selecting environment profile -->
-          <h4>Select Environment Profile</h4>
-          <select id="environmentProfileSelect" onchange="selectEnvironmentProfile()">
-            <!-- Options will be dynamically added here -->
-            <option value="6609bfcbd7f853a33ae43890">Tomato</option>
-            <option value="662246000da40eabd6ea3c43">Strawberry</option>
-            <option value="6622474b0da40eabd6ea3c44">Potato</option>
-            <option value="662247a60da40eabd6ea3c46">Blueberry</option>
-            <option value="662247630da40eabd6ea3c45">Onion</option>
-          </select>
-          <!-- Save button -->
-          <button id="saveButtonSelect" class="btn green save-button" onclick="saveChangesProfile()" style="display: none;">Save Environmental Changes</button>
+            <!-- Content for selecting environment profile -->
+            <h4>Select Environment Profile</h4>
+            <select id="environmentProfileSelect" onchange="selectEnvironmentProfile()">
+                <!-- Options will be dynamically added here -->
+                <option value="6609bfcbd7f853a33ae43890">Tomato</option>
+                <option value="662246000da40eabd6ea3c43">Strawberry</option>
+                <option value="6622474b0da40eabd6ea3c44">Potato</option>
+                <option value="662247a60da40eabd6ea3c46">Blueberry</option>
+                <option value="662247630da40eabd6ea3c45">Onion</option>
+            </select>
+            <!-- Save button -->
+            <button id="saveButtonSelect" class="btn green save-button" onclick="saveChangesProfile()" style="display: none;">Save Environmental Changes</button>
         </div>
 
         <!-- Profile details -->
         <div id="profileDetails"></div>
+    </div>
 
-      </div>
-
-      <!-- JavaScript scripts -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-      <script>
+    <!-- JavaScript scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
         // Define plantProfiles globally
         let plantProfiles;
 
@@ -198,9 +197,63 @@
             const humidity = document.getElementById("humidity").value;
             const airPressure = document.getElementById("airPressure").value;
 
-            // Implement saving changes here (for demonstration, just alerting the values)
-            alert(`Air Temperature: ${airTemperature}, Humidity: ${humidity}, Air Pressure: ${airPressure}`);
+            // Implement logic to update actuators based on the input values
+            updateActuators(airTemperature, humidity, airPressure);
         }
+
+        async function updateActuators(airTemperature, humidity, airPressure) {
+    try {
+        let coolingState = "Off";
+        let heatingState = "Off";
+        let ventilationState = "Off";
+
+        // Example logic: If air temperature is above 25°C, turn on cooling and turn off heating
+        if (parseFloat(airTemperature) > 25) {
+            coolingState = "On";
+            heatingState = "Off";
+
+        } else {
+            // If air temperature is below or equal to 25°C, turn on heating and turn off cooling
+            coolingState = "Off";
+            heatingState = "On";
+        }
+
+        // Example logic: If humidity is above 50%, turn on ventilation
+        if (parseFloat(humidity) > 50) {
+            ventilationState = "On";
+        }
+
+        // Update the states of different actuators in the GHMS.Actuators database
+        await fetch('http://localhost:3000/updateactuator/Cooling System', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ state: coolingState })
+        });
+
+        await fetch('http://localhost:3000/updateactuator/Heating System', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ state: heatingState })
+        });
+
+        await fetch('http://localhost:3000/updateactuator/Natural Ventilation ', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ state: ventilationState })
+        });
+
+        console.log('Actuators updated successfully.');
+    } catch (error) {
+        console.error('Error updating actuators:', error);
+    }
+}
+
 
         function saveChangesProfile() {
             // Implement saving changes for profile selection here
@@ -231,6 +284,6 @@
             // Show the save button
             document.getElementById("saveButton").style.display = "block";
         }
-      </script>
+    </script>
 </body>
 </html>
