@@ -239,13 +239,6 @@ app.post('/updateactuator/:actuatorName', async (req, res) => {
   }
 });
 
-
-
-
-
-
-   
-
 // Route for menu
 app.get('/menu',(req, res) => {
   let user = req.query.user;

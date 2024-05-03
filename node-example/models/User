@@ -1,21 +1,19 @@
-
-
-
-const { ObjectId } = require('mongodb');
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
-var User = new Schema({
 
+const UserSchema = new mongoose.Schema({
+    // Mongoose will automatically create _id field
     username: {
-        type: String
+        type: String,
+        unique: true, // Ensures each username is unique
+        required: true // Username is required
     },
     password: {
-        type: String
+        type: String,
+        required: true // Password is required
     }
-})
- 
-User.plugin(passportLocalMongoose);
- 
+});
 
-module.exports = mongoose.model('User', User)
+UserSchema.plugin(passportLocalMongoose);
+
+module.exports = mongoose.model('User', UserSchema);
