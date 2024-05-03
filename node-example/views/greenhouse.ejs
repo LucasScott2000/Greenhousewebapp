@@ -22,13 +22,18 @@
             <li><a href="/menu"> Home Menu</a></li>
           </ul>
         </div>
-      </nav>
-      <br>
+    </nav>
+    <br>
     <div class="container">
-      <div id="sensors" class="row">
+        <h2>Sensors</h2>
+        <div class="row">
+            <!-- Sensor data -->
             {% for sensor in sensors %}
+            
             <div class="col s4" >
-                <div id="{{ sensor.sensor_type }}" class="card-panel green lighten-3">Sensor : 
+                
+                <div class="card-panel green lighten-3" id="{{ sensor.sensor_type }}">
+                    Sensor: 
                     {% if sensor.sensor_type == "airTemp" %}
                         Air Temperature (°C)
                     {% elif sensor.sensor_type == "humidity" %}
@@ -36,7 +41,7 @@
                     {% elif sensor.sensor_type == "airPress" %}
                         Air Pressure (hPa)
                     {% endif %}
-                    <br> Current Value : {{ sensor.value }}
+                    <br>Current Value: {{ sensor.value }}
                     {% if sensor.sensor_type == "airTemp" %}
                         °C
                     {% elif sensor.sensor_type == "humidity" %}
@@ -44,9 +49,15 @@
                     {% elif sensor.sensor_type == "airPress" %}
                         hPa
                     {% endif %}
-                    <br> Timestamp : {{ sensor.timestamp }}</div>
+                    <br>Timestamp: {{ sensor.timestamp }}
+                </div>
+
             </div>
             {% endfor %}
+        </div> 
+        <h2>Actuators</h2>
+        <div class="row" id="actuators">
+            <!-- Actuator data -->
         </div> 
     </div>
 
@@ -54,52 +65,80 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>  
 
     <script>
-      function run() {
+        function run() {
+            // Creating Our XMLHttpRequest object 
+            let xhr = new XMLHttpRequest();
 
-        // Creating Our XMLHttpRequest object 
-        let xhr = new XMLHttpRequest();
+            // Making our connection  
+            let url = 'http://localhost:3000/getsensordata';
+            xhr.open("GET", url, true);
 
-       // Making our connection  
-        let url = 'http://localhost:3000/getsensordata';
-       xhr.open("GET", url, true);
+            // function execute after request is successful 
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const jsonResponse = JSON.parse(this.responseText);
+                    jsonResponse.forEach(sensor => {
+                        // Get the sensor type and value 
+                        const sensorType = sensor.sensor_type;
+                        const sensorValue = sensor.value;
 
-        // function execute after request is successful 
-       xhr.onreadystatechange = function () {
-           if (this.readyState == 4 && this.status == 200) {
-            const jsonResponse = JSON.parse(this.responseText);
-            jsonResponse.forEach(sensor => {
-              // Get the sensor type and value 
-              const sensorType = sensor.sensor_type;
-              const sensorValue = sensor.value;
+                        // Format the timestamp
+                        const timestamp = new Date(sensor.timestamp);
+                        const formattedTimestamp = timestamp.toLocaleString();
 
-              // Format the timestamp
-              const timestamp = new Date(sensor.timestamp);
-              const formattedTimestamp = timestamp.toLocaleString();
+                        // Update the HTML content of the sensor's div with the new value and formatted timestamp
+                        const sensorDiv = document.getElementById(sensorType);
+                        if (sensorDiv) {
+                            sensorDiv.innerHTML = `Sensor: 
+                                ${sensorType == "airTemp" ? "Air Temperature (°C)" : 
+                                sensorType == "humidity" ? "Humidity (%)" : 
+                                sensorType == "airPress" ? "Air Pressure (hPa)" : sensorType}
+                                <br>Current Value: ${sensorValue}
+                                {% if sensor.sensor_type == "airTemp" %}
+                                    °C
+                                {% elif sensor.sensor_type == "humidity" %}
+                                    %
+                                {% elif sensor.sensor_type == "airPress" %}
+                                    hPa
+                                {% endif %}
+                                <br>Timestamp: ${formattedTimestamp}`;
+                        }
+                    });
+                }
+            }
+            // Sending our request 
+            xhr.send();
 
-              // Update the HTML content of the sensor's div with the new value and formatted timestamp
-              const sensorDiv = document.getElementById(sensorType);
-              if (sensorDiv) {
-                  sensorDiv.innerHTML = `Sensor: 
-                    ${sensorType == "airTemp" ? "Air Temperature (°C)" : 
-                      sensorType == "humidity" ? "Humidity (%)" : 
-                      sensorType == "airPress" ? "Air Pressure (hPa)" : sensorType}
-                    <br>Current Value: ${sensorValue}
-                    {% if sensor.sensor_type == "airTemp" %}
-                        °C
-                    {% elif sensor.sensor_type == "humidity" %}
-                        %
-                    {% elif sensor.sensor_type == "airPress" %}
-                        hPa
-                    {% endif %}
-                    <br>Timestamp: ${formattedTimestamp}`;
-              }
-          });
-           }
-       }
-        // Sending our request 
-        xhr.send();
-    }
-    setInterval(run, 2000);
+            // Fetch actuator data
+            let xhrActuators = new XMLHttpRequest();
+            let urlActuators = 'http://localhost:3000/getactuators';
+            xhrActuators.open("GET", urlActuators, true);
+            xhrActuators.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const actuatorData = JSON.parse(this.responseText);
+                    const actuatorsDiv = document.getElementById('actuators');
+                    actuatorsDiv.innerHTML = ''; // Clear previous data
+                    const displayedActuators = new Set(); // To keep track of displayed actuators
+                    actuatorData.forEach(actuator => {
+                        const actuatorName = actuator.actuator_name;
+                        if (!displayedActuators.has(actuatorName)) { // Check if actuator already displayed
+                            const actuatorState = actuator.state;
+                            const actuatorCard = document.createElement('div');
+                            actuatorCard.className = 'col s4';
+                            actuatorCard.innerHTML = `
+                                <div class="card-panel green lighten-3">
+                                    Actuator: ${actuatorName}<br>
+                                    State: ${actuatorState}
+                                </div>`;
+                            actuatorsDiv.appendChild(actuatorCard);
+                            displayedActuators.add(actuatorName); // Add to displayed set
+                        }
+                    });
+                }
+            }
+            xhrActuators.send();
+        }
+        setInterval(run, 2000);
     </script>
 </body>
 </html>
