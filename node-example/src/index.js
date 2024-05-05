@@ -88,7 +88,6 @@ app.get('/historical', async (req, res) => {
   histsensors = db.collection('History');
   documents = await histsensors.find({}).toArray();
   response_json = JSON.stringify(documents);
-  console.log(documents)
   return res.render("historical.ejs", {histsensors:documents});  
 });
 
@@ -99,7 +98,6 @@ app.get('/login', async (req, res) => {
   sensors = db.collection('Sensors');
   documents = await sensors.find({}).toArray();
   response_json = JSON.stringify(documents);
-  console.log(documents)
   return res.render("login.ejs", {sensors:documents}); 
 });
 
@@ -110,7 +108,6 @@ app.get('/envselect', async (req, res) => {
   sensors = db.collection('Sensors');
   documents = await sensors.find({}).toArray();
   response_json = JSON.stringify(documents);
-  console.log(documents)
   return res.render("envselect.ejs", {sensors:documents}); 
 });
 
@@ -132,7 +129,6 @@ app.get('/changegreenhouse', async (req, res) => {
   sensors = db.collection('Sensors');
   documents = await sensors.find({}).toArray();
   response_json = JSON.stringify(documents);
-  console.log(documents)
   return res.render("changegreenhouse.ejs", {sensors:documents}); 
 });
 
@@ -142,8 +138,10 @@ app.get('/greenhouse', async (req, res) => {
   db = connection.db("GHMS");
   sensors = db.collection('Sensors');
   documents = await sensors.find({}).toArray();
+  actuators = db.collection('Actuators');
+  documents2 = await actuators.find({}).toArray();
   response_json = JSON.stringify(documents);
-  return res.render("greenhouse.ejs", {sensors:documents}); // *change to login.ejs as this is the first page!*
+  return res.render("greenhouse.ejs", {sensors:documents, actuators:documents2}); // *change to login.ejs as this is the first page!*
 });
 
 // Route to get sensor data
