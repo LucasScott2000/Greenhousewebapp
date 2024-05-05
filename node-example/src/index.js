@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 // Set up Express application
 const app = express();
@@ -60,9 +61,17 @@ app.post('/login', async function(req, res){
     documents = await users.find({}).toArray();
     response_json = JSON.stringify(documents);
   
+    // const saltRounds = 10;
+    // const salt = bcrypt.genSaltSync(saltRounds);
+    
+    // // Hash a password
+    // const plainPassword = req.body.password;
+    // const hashedPassword = bcrypt.hashSync(plainPassword, salt);
+    // console.log(hashedPassword)
+
     const user = await users.findOne({ username: req.body.username });
   
-    if (user && req.body.password === user.password) {
+    if (user && (await bcrypt.compare(req.body.password, user.password))) {
       return res.redirect('/menu?user=' + encodeURIComponent(user.username));
     }
     res.render('login.ejs',{ error: "Username or password is incorrect" });
