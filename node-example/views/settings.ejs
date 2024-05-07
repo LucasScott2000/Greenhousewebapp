@@ -1,12 +1,17 @@
-
+<!-- Link to the favicon for the webpage -->
 <link rel="icon" type="image/png" href="https://github.com/LucasScott2000/Greenhousewebapp/raw/greenhouse-website/node-example/logo.png">
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Declaring character encoding and viewport for responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Setting the title of the page -->
     <title>Settings</title>
+    <!-- Internal CSS for styling -->
     <style>
+        /* Setting default styles for the body */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -14,6 +19,7 @@
             background-color: lightblue;
         }
 
+        /* Styles for the heading */
         h1 {
             color: #ffffff;
             text-align: center;
@@ -21,6 +27,7 @@
             font-weight: normal;
         }
 
+        /* Container styles for layout */
         .container {
             display: flex;
             flex-direction: column;
@@ -30,6 +37,7 @@
             padding: 20px;
         }
 
+        /* Styles for the main content boxes */
         .box {
             width: 100%;
             max-width: 400px;
@@ -39,6 +47,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        /* Styles for headings within boxes */
         h2 {
             color: #333;
             font-size: 20px;
@@ -46,6 +55,7 @@
             /* Remove bold font weight */
         }
 
+        /* Styles for anchor links */
         a {
             text-decoration: none;
             text-align: left;
@@ -53,15 +63,18 @@
             color: #fff;
         }
 
+        /* Form styles */
         form {
             margin-bottom: 20px;
         }
 
+        /* Label styles */
         label {
             display: block;
             margin-bottom: 10px;
         }
 
+        /* Styles for input fields and select dropdowns */
         select,
         input[type="text"] {
             width: calc(100% - 20px);
@@ -72,12 +85,14 @@
             box-sizing: border-box;
         }
 
+        /* Styles for button groups */
         .button-group {
             display: flex;
             gap: 10px;
             justify-content: center; /* Center the buttons */
         }
 
+        /* Styles for symmetrical box layouts */
         .symmetrical-box {
             display: flex;
             flex-direction: column;
@@ -86,10 +101,7 @@
             align-items: center; /* Center the buttons vertically */
         }
 
-        .symmetrical-box button {
-            width: 100%; /* Make all buttons the same width */
-        }
-
+        /* Styles for buttons */
         button {
             background-color: #28a745;
             color: #fff;
@@ -99,23 +111,28 @@
             cursor: pointer;
         }
 
+        /* Hover styles for buttons */
         button:hover {
             background-color: #218838;
         }
 
+        /* Additional styles for specific boxes */
         .box.white {
             background-color: #fff;
         }
 
+        /* Styles for red buttons */
         button.red {
             background-color: #dc3545;
             color: #fff;
         }
 
+        /* Hover styles for red buttons */
         button.red:hover {
             background-color: #c82333;
         }
 
+        /* Styles for green buttons */
         button.green {
             background-color: #4CAF50;
             color: white;
@@ -125,10 +142,12 @@
             cursor: pointer;
         }
 
+        /* Hover styles for green buttons */
         button.green:hover {
             background-color: #45a049;
         }
 
+        /* Styles for popup */
         .popup {
             display: none;
             position: fixed;
@@ -142,10 +161,12 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        /* Styles for buttons within popup */
         .popup .button-group {
             display: flex;
         }
 
+        /* Styles for revert changes button */
         .popup .revert-changes,
         .popup .save-preferences {
             flex: 1;
@@ -154,24 +175,29 @@
             cursor: pointer;
         }
 
+        /* Styles for revert changes button */
         .popup .revert-changes {
             background-color: #dc3545;
             color: #fff;
         }
 
+        /* Hover styles for revert changes button */
         .popup .revert-changes:hover {
             background-color: #c82333;
         }
 
+        /* Styles for save preferences button */
         .popup .save-preferences {
             background-color: #28a745;
             color: #fff;
         }
 
+        /* Hover styles for save preferences button */
         .popup .save-preferences:hover {
             background-color: #218838;
         }
 
+        /* Styles for the green banner */
         .green-banner {
             background-color: #66bb6a;
             color: white;
@@ -180,7 +206,6 @@
             display: inline-flex;
             align-items: center;
             width: 100%;
-        
         }
     </style>
 </head>
@@ -192,15 +217,19 @@
         <h1>Settings</h1>
     </div>
 
+    <!-- Container for the main content -->
     <div class="container">
+        <!-- Box for user preferences -->
         <div class="box">
             <h2>User Preferences</h2>
             <form id="user-preferences-form" action="/user/preferences" method="POST">
+                <!-- Dropdown for preferred unit -->
                 <label for="preferredUnit">Preferred Unit:</label>
                 <select name="preferredUnit" id="preferredUnit">
                     <option value="celsius">Celsius</option>
                     <option value="fahrenheit">Fahrenheit</option>
                 </select>
+                <!-- Dropdown for mode -->
                 <label for="mode">Mode:</label>
                 <select name="mode" id="mode">
                     <option value="light">Light</option>
@@ -209,28 +238,34 @@
             </form>
         </div>
 
+        <!-- Box for plant profile settings -->
         <div class="box white">
             <h2>Plant Profile Settings</h2>
             <div class="button-group">
                 <div class="symmetrical-box">
+                    <!-- Buttons for adding and editing plant profiles -->
                     <button>Add Custom Plant Profile</button>
                     <button>Edit Custom Plant Profile</button>
                 </div>
                 <div class="symmetrical-box">
+                    <!-- Buttons for reverting and deleting plant profiles -->
                     <button>Revert Profile Override</button>
                     <button class="red">Delete Custom Profile</button>
                 </div>
             </div>
         </div>
 
+        <!-- Box for user account settings -->
         <div class="box white">
             <h2>User Account Settings</h2>
             <div class="button-group">
                 <div class="symmetrical-box">
+                    <!-- Buttons for changing username and restoring factory defaults -->
                     <button>Change Username</button>
                     <button class="red revert-changes">Restore Factory Defaults</button>
                 </div>
                 <div class="symmetrical-box">
+                    <!-- Buttons for changing password and deactivating account -->
                     <button class="green save-preferences">Change Password</button>
                     <button class="red">Deactivate Account</button>
                 </div>
@@ -238,13 +273,16 @@
         </div>
     </div>
 
+    <!-- Popup for saving preferences -->
     <div class="popup" id="save-preferences-popup">
         <div class="button-group">
+            <!-- Buttons for reverting changes and saving preferences -->
             <button class="revert-changes red">Revert Changes</button>
             <button class="save-preferences">Save Changes</button>
         </div>
     </div>
 
+    <!-- JavaScript for handling form and popup interactions -->
     <script>
         const form = document.getElementById('user-preferences-form');
         const popup = document.getElementById('save-preferences-popup');

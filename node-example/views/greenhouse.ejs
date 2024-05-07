@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Set character encoding -->
     <meta charset="UTF-8">
+    <!-- Set favicon -->
     <link rel="icon" type="image/png" href="https://github.com/LucasScott2000/Greenhousewebapp/raw/greenhouse-website/node-example/logo.png">
+    <!-- Set viewport for responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Set page title -->
     <title>Greenhouse Data and Status</title>
-    <!-- Compiled and minified CSS -->
+    <!-- Link to Materialize CSS framework -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Internal styling -->
     <style>
         body {
-            background-color: lightblue;
+            background-color: lightblue; /* Set background color */
         }
     </style>
 </head>
 <body>
+    <!-- Navigation bar -->
     <nav class="green lighten-1">
         <div class="nav-wrapper">
           <a href="#" class="brand-logo center">Current Greenhouse Data and Status</a>
           <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="/login">Logout</a></li>
-            <li><a href="/menu"> Home Menu</a></li>
+            <li><a href="/login">Logout</a></li> <!-- Logout link -->
+            <li><a href="/menu"> Home Menu</a></li> <!-- Home menu link -->
           </ul>
         </div>
     </nav>
     <br>
     <div class="container">
+        <!-- Sensors section -->
         <h2>Sensors</h2>
         <div class="row">
-            <!-- Sensor data -->
+            <!-- Display sensor data -->
             {% for sensor in sensors %}
             
             <div class="col s4" >
@@ -41,7 +48,7 @@
                     {% elif sensor.sensor_type == "airPress" %}
                         Air Pressure (hPa)
                     {% endif %}
-                    <br>Current Value: {{ sensor.value }}
+                    <br>Current Value: {{ sensor.value }} <!-- Display sensor value -->
                     {% if sensor.sensor_type == "airTemp" %}
                         °C
                     {% elif sensor.sensor_type == "humidity" %}
@@ -49,23 +56,24 @@
                     {% elif sensor.sensor_type == "airPress" %}
                         hPa
                     {% endif %}
-                    <br>Timestamp: {{ sensor.timestamp }}
+                    <br>Timestamp: {{ sensor.timestamp }} <!-- Display sensor timestamp -->
                 </div>
 
             </div>
             {% endfor %}
         </div> 
+        <!-- Actuators section -->
         <h2>Actuators</h2>
         <div class="row" id="actuators">
-            <!-- Actuator data -->
+            <!-- Display actuator data -->
             {% for actuator in actuators %}
             
             <div class="col s4" >
                 
                 <div class="card-panel green lighten-3" id="{{ actuator.actuator_name }}">
-                   Actuator: {{actuator.actuator_name}} 
+                   Actuator: {{actuator.actuator_name}} <!-- Display actuator name -->
                     <br>
-                   State: {{actuator.state}}
+                   State: {{actuator.state}} <!-- Display actuator state -->
                 </div>
 
             </div>
@@ -73,19 +81,21 @@
         </div> 
     </div>
 
-    <!-- Compiled and minified JavaScript -->
+    <!-- Link to Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>  
 
+    <!-- JavaScript for updating sensor and actuator values -->
     <script>
+        // Function to update sensor and actuator values
         function updateValues() {
             // Creating Our XMLHttpRequest object 
             let xhr = new XMLHttpRequest();
 
-            // Making our connection  
+            // Making the connection  
             let url = 'http://localhost:3000/getsensordata';
             xhr.open("GET", url, true);
 
-            // function execute after request is successful 
+            // Function execute after request is successful 
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     const jsonResponse = JSON.parse(this.responseText);
@@ -150,6 +160,7 @@
             }
             xhrActuators.send();
         }
+        // Update values every 10 seconds
         setInterval(updateValues, 10000);
     </script>
 </body>

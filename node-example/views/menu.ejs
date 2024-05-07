@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Declaring document type and language -->
     <meta charset="UTF-8">
+    <!-- Allowing the page to be responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Setting the title of the page -->
     <title>Greenhouse Home Menu</title>
-    <!-- Favicon -->
+    <!-- Favicon for the webpage -->
     <link rel="icon" type="image/png" href="https://github.com/LucasScott2000/Greenhousewebapp/raw/greenhouse-website/node-example/logo.png">
-    <!-- Compiled and minified CSS -->
+    <!-- Linking to external CSS framework for styling -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Internal CSS for custom styling -->
     <style> 
         body {
             background-color: lightblue;
@@ -15,38 +19,48 @@
     </style>
 </head>
 <body>
+    <!-- Navigation bar -->
     <nav class="green lighten-1">
         <div class="nav-wrapper">
+            <!-- Logo and title of the webpage -->
             <a href="#" class="brand-logo center">Greenhouse Home Menu</a>
+            <!-- Navigation links -->
             <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <!-- Logout link -->
                 <li><a href="/login">Logout</a></li>
             </ul>
         </div>
     </nav>
     <br>
+    <!-- Displaying a welcome message if user is logged in -->
     {% if user %}
     <h5 class="black-text center" style="font-weight:bold">Welcome back {{user}}!</h5>
     {% endif %}
     <br>
 
+    <!-- Container for the main content -->
     <div class="container">
         <div class="row">
             <div class="col s12">
+                <!-- Link to view real-time greenhouse data -->
                 <a href='/greenhouse' class="black-text">
                     <div class="card-panel green lighten-3 hoverable center" style="cursor: pointer">Real-time Greenhouse Data</div>
                 </a>
             </div>
             <div class="col s12">
+                <!-- Link to view historical greenhouse data -->
                 <a href='/historical' class="black-text">
                     <div class="card-panel green lighten-3 hoverable center" style="cursor: pointer">View Historical Greenhouse Data</div>
                 </a>
             </div>
             <div class="col s12">
+                <!-- Link to change greenhouse environment settings -->
                 <a href='/changegreenhouse' class="black-text">
                     <div class="card-panel green lighten-3 hoverable center" style="cursor: pointer">Change Greenhouse Environment</div>
                 </a>
             </div>
             <div class="col s12">
+                <!-- Link to user settings page -->
                 <a href='/settings' class="black-text">
                     <div class="card-panel green lighten-3 hoverable center" style="cursor: pointer">Settings</div>
                 </a>
